@@ -64,6 +64,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth ->
                     auth.requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/food/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/categories/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
