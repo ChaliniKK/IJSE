@@ -7,14 +7,10 @@ import './Home.css';
 import { useCart } from '../context/CartContext';
 
 const MOCK_FOOD = [
-  { id: 1, name: 'Margherita Pizza', price: 12.99, description: 'Classic pizza with tomato sauce, mozzarella, and fresh basil.', imageUrl: 'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&q=80&w=400', category: { id: 1, name: 'Pizza' } },
-  { id: 2, name: 'Double Burger', price: 15.50, description: 'Juicy double beef patty with cheese, lettuce, and secret sauce.', imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=400', category: { id: 2, name: 'Burgers' } },
-  { id: 3, name: 'Dragon Roll', price: 18.00, description: 'Tempura shrimp, cucumber, avocado topped with eel sauce.', imageUrl: 'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&q=80&w=400', category: { id: 3, name: 'Sushi' } },
-  { id: 4, name: 'Greek Salad', price: 10.99, description: 'Fresh cucumbers, tomatoes, olives, and feta cheese.', imageUrl: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&q=80&w=400', category: { id: 4, name: 'Salads' } },
-  { id: 5, name: 'Pepperoni Pizza', price: 14.99, description: 'Loaded with pepperoni and extra mozzarella.', imageUrl: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&q=80&w=400', category: { id: 1, name: 'Pizza' } },
-  { id: 6, name: 'Pasta Carbonara', price: 16.50, description: 'Creamy pasta with pancetta and parmesan.', imageUrl: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?auto=format&fit=crop&q=80&w=400', category: { id: 5, name: 'Pasta' } },
-  { id: 7, name: 'Chicken Tacos', price: 11.50, description: 'Soft tacos with grilled chicken and fresh salsa.', imageUrl: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&q=80&w=400', category: { id: 6, name: 'Mexican' } },
-  { id: 8, name: 'Steak Frites', price: 24.99, description: 'Juicy steak served with crispy french fries.', imageUrl: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&q=80&w=400', category: { id: 7, name: 'Main' } },
+  { id: 1, name: 'Margherita Pizza', price: 12.99, description: 'Classic pizza with tomato sauce, mozzarella, and fresh basil.', imageUrl: 'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&q=80&w=400' },
+  { id: 2, name: 'Double Burger', price: 15.50, description: 'Juicy double beef patty with cheese, lettuce, and secret sauce.', imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=400' },
+  { id: 3, name: 'Dragon Roll', price: 18.00, description: 'Tempura shrimp, cucumber, avocado topped with eel sauce.', imageUrl: 'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&q=80&w=400' },
+  { id: 4, name: 'Greek Salad', price: 10.99, description: 'Fresh cucumbers, tomatoes, olives, and feta cheese.', imageUrl: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&q=80&w=400' },
 ];
 
 const Home: React.FC = () => {
@@ -35,48 +31,18 @@ const Home: React.FC = () => {
           axiosInstance.get('/food'),
           axiosInstance.get('/categories')
         ]);
-        
-        const backendCats = catRes.data || [];
-        const backendFoods = foodRes.data || [];
-
-        // Synchronize mock food categories with real backend category IDs
-        const syncedMockFood = MOCK_FOOD.map(mock => {
-          const realCat = backendCats.find((c: any) => c.name.toLowerCase() === mock.category.name.toLowerCase());
-          return {
-            ...mock,
-            category: realCat || mock.category
-          };
-        });
-        
-        const combinedFoods = [
-          ...backendFoods,
-          ...syncedMockFood.filter(mock => !backendFoods.some((b: any) => b.name === mock.name))
-        ];
-        
-        setFoodItems(combinedFoods);
-        setCategories(backendCats.length > 0 ? backendCats : [
-          { id: 1, name: 'Pizza' }, { id: 2, name: 'Burgers' }, { id: 3, name: 'Sushi' }, 
-          { id: 4, name: 'Salads' }, { id: 5, name: 'Pasta' }, { id: 6, name: 'Mexican' }
-        ]);
+        setFoodItems(foodRes.data.length > 0 ? foodRes.data : MOCK_FOOD);
+        setCategories(catRes.data);
       } catch (error) {
         console.error("Failed to fetch data:", error);
         setFoodItems(MOCK_FOOD);
-        setCategories([
-          { id: 1, name: 'Pizza' }, { id: 2, name: 'Burgers' }, { id: 3, name: 'Sushi' }, 
-          { id: 4, name: 'Salads' }, { id: 5, name: 'Pasta' }, { id: 6, name: 'Mexican' }
-        ]);
       }
     };
     fetchData();
   }, []);
 
   const filteredItems = foodItems.filter(item => {
-    const activeCategory = selectedCategory ? categories.find(c => c.id === selectedCategory) : null;
-    
-    const matchesCategory = !selectedCategory || 
-      item.category?.id === selectedCategory || 
-      item.category?.name === activeCategory?.name;
-    
+    const matchesCategory = selectedCategory ? item.category?.id === selectedCategory : true;
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           item.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
