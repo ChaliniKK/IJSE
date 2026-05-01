@@ -27,23 +27,34 @@ const Orders: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      if (!user) return;
-      try {
-        const response = await axiosInstance.get(`/orders/user/${user.id}`);
-        setOrders(response.data.sort((a: Order, b: Order) => 
-          new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime()
-        ));
-      } catch (error) {
-        console.error('Error fetching orders:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchOrders = async () => {
+    if (!user) return;
+    try {
+      const response = await axiosInstance.get(`/orders/user/${user.id}`);
+      setOrders(response.data.sort((a: Order, b: Order) => 
+        new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime()
+      ));
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchOrders();
   }, [user]);
+
+  const handleCancelOrder = async (orderId: number) => {
+    if (!window.confirm('Are you sure you want to cancel this order?')) return;
+    try {
+      await axiosInstance.put(`/orders/${orderId}/cancel`);
+      fetchOrders(); // Refresh orders
+    } catch (error) {
+      console.error('Error cancelling order:', error);
+      alert('Failed to cancel order. Please try again.');
+    }
+  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -103,7 +114,12 @@ const Orders: React.FC = () => {
                   <h3>${order.totalAmount.toFixed(2)}</h3>
                 </div>
                 {order.status === 'PLACED' && (
-                  <button className="btn-outline-danger">Cancel Order</button>
+                  <button 
+                    className="btn-outline-danger"
+                    onClick={() => handleCancelOrder(order.id)}
+                  >
+                    Cancel Order
+                  </button>
                 )}
               </div>
             </div>

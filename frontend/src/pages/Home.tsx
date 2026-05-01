@@ -36,15 +36,25 @@ const Home: React.FC = () => {
           axiosInstance.get('/categories')
         ]);
         
-        // Combine backend food with mock food to ensure a rich UI
+        const backendCats = catRes.data || [];
         const backendFoods = foodRes.data || [];
+
+        // Synchronize mock food categories with real backend category IDs
+        const syncedMockFood = MOCK_FOOD.map(mock => {
+          const realCat = backendCats.find((c: any) => c.name.toLowerCase() === mock.category.name.toLowerCase());
+          return {
+            ...mock,
+            category: realCat || mock.category
+          };
+        });
+        
         const combinedFoods = [
           ...backendFoods,
-          ...MOCK_FOOD.filter(mock => !backendFoods.some((b: any) => b.name === mock.name))
+          ...syncedMockFood.filter(mock => !backendFoods.some((b: any) => b.name === mock.name))
         ];
         
         setFoodItems(combinedFoods);
-        setCategories(catRes.data.length > 0 ? catRes.data : [
+        setCategories(backendCats.length > 0 ? backendCats : [
           { id: 1, name: 'Pizza' }, { id: 2, name: 'Burgers' }, { id: 3, name: 'Sushi' }, 
           { id: 4, name: 'Salads' }, { id: 5, name: 'Pasta' }, { id: 6, name: 'Mexican' }
         ]);
@@ -61,10 +71,11 @@ const Home: React.FC = () => {
   }, []);
 
   const filteredItems = foodItems.filter(item => {
-    // If a category is selected, match by category ID or name (for mock items)
-    const matchesCategory = selectedCategory 
-      ? (item.category?.id === selectedCategory || item.category?.name === categories.find(c => c.id === selectedCategory)?.name) 
-      : true;
+    const activeCategory = selectedCategory ? categories.find(c => c.id === selectedCategory) : null;
+    
+    const matchesCategory = !selectedCategory || 
+      item.category?.id === selectedCategory || 
+      item.category?.name === activeCategory?.name;
     
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           item.description.toLowerCase().includes(searchQuery.toLowerCase());
