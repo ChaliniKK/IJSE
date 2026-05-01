@@ -2,6 +2,7 @@ package com.ijse.foodorderingsystem.controller;
 
 import com.ijse.foodorderingsystem.entity.Category;
 import com.ijse.foodorderingsystem.service.CategoryService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,17 +39,18 @@ public class CategoryController {
     // Admin only: create, update, delete
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+    public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) {
         logger.info("POST /api/categories - name: {}", category.getName());
         return ResponseEntity.ok(categoryService.createCategory(category));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category) {
+    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @Valid @RequestBody Category category) {
         logger.info("PUT /api/categories/{}", id);
         return ResponseEntity.ok(categoryService.updateCategory(id, category));
     }
+
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")

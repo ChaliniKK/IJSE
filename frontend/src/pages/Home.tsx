@@ -14,25 +14,31 @@ const MOCK_FOOD = [
 
 const Home: React.FC = () => {
   const [foodItems, setFoodItems] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchFood = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axiosInstance.get('/food');
-        setFoodItems(response.data.length > 0 ? response.data : MOCK_FOOD);
+        const [foodRes, catRes] = await Promise.all([
+          axiosInstance.get('/food'),
+          axiosInstance.get('/categories')
+        ]);
+        setFoodItems(foodRes.data.length > 0 ? foodRes.data : MOCK_FOOD);
+        setCategories(catRes.data);
       } catch (error) {
-        console.error("Failed to fetch food:", error);
+        console.error("Failed to fetch data:", error);
         setFoodItems(MOCK_FOOD);
       } finally {
         setLoading(false);
       }
     };
-    fetchFood();
+    fetchData();
   }, []);
 
   return (
     <div className="home-page">
+      {/* ... Hero section remains same ... */}
       <section className="hero">
         <div className="container hero-content">
           <motion.div 
@@ -86,20 +92,21 @@ const Home: React.FC = () => {
       <section className="categories container">
         <h2>Popular Categories</h2>
         <div className="category-grid">
-          {['Pizza', 'Burgers', 'Sushi', 'Desserts', 'Drinks', 'Healthy'].map((cat, i) => (
+          {categories.map((cat, i) => (
             <motion.div 
-              key={cat} 
+              key={cat.id} 
               className="category-card"
               whileHover={{ scale: 1.05 }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
             >
-              {cat}
+              {cat.name}
             </motion.div>
           ))}
         </div>
       </section>
+
 
       <section className="food-grid-section container">
         <div className="section-header">

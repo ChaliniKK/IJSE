@@ -27,7 +27,6 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick }) => {
 
         <div className="nav-links">
           <Link to="/" className="nav-item">Home</Link>
-          <Link to="/orders" className="nav-item">Orders</Link>
           
           <div className="cart-icon" onClick={onCartClick}>
             <ShoppingCart size={24} />
@@ -38,7 +37,13 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick }) => {
             <div className="user-profile">
               <User size={24} />
               <div className="dropdown">
-                <p>{user?.username}</p>
+                <p className="user-name">{user?.username}</p>
+                <div className="dropdown-divider"></div>
+                <Link to="/orders" className="dropdown-item">My Orders</Link>
+                {user?.roles.includes('ROLE_ADMIN') && (
+                  <Link to="/admin" className="dropdown-item">Admin Dashboard</Link>
+                )}
+                <div className="dropdown-divider"></div>
                 <button onClick={logout} className="logout-btn">
                   <LogOut size={16} /> Logout
                 </button>
@@ -48,6 +53,7 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick }) => {
             <Link to="/login" className="login-link">Login</Link>
           )}
         </div>
+
       </div>
     </nav>
   );

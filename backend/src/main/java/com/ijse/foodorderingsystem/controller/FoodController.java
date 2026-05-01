@@ -2,6 +2,7 @@ package com.ijse.foodorderingsystem.controller;
 
 import com.ijse.foodorderingsystem.entity.FoodItem;
 import com.ijse.foodorderingsystem.service.FoodItemService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,17 +51,18 @@ public class FoodController {
     // Admin only: create, update, delete
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<FoodItem> createFoodItem(@RequestBody FoodItem foodItem) {
+    public ResponseEntity<FoodItem> createFoodItem(@Valid @RequestBody FoodItem foodItem) {
         logger.info("POST /api/food - name: {}", foodItem.getName());
         return ResponseEntity.ok(foodItemService.createFoodItem(foodItem));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<FoodItem> updateFoodItem(@PathVariable Long id, @RequestBody FoodItem foodItem) {
+    public ResponseEntity<FoodItem> updateFoodItem(@PathVariable Long id, @Valid @RequestBody FoodItem foodItem) {
         logger.info("PUT /api/food/{}", id);
         return ResponseEntity.ok(foodItemService.updateFoodItem(id, foodItem));
     }
+
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")

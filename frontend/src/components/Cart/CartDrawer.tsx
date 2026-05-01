@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
+import { X, Minus, Plus, Trash2, ShoppingBag, Loader2, CheckCircle } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { useNavigate } from 'react-router-dom';
 import './CartDrawer.css';
 
 interface CartDrawerProps {
@@ -10,7 +11,23 @@ interface CartDrawerProps {
 }
 
 const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
-  const { cartItems, removeFromCart, updateQuantity, totalPrice, totalItems } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, totalPrice, totalItems, placeOrder, loading } = useCart();
+  const [orderSuccess, setOrderSuccess] = useState(false);
+  const navigate = useNavigate();
+
+  const handleCheckout = async () => {
+    try {
+      await placeOrder();
+      setOrderSuccess(true);
+      setTimeout(() => {
+        setOrderSuccess(false);
+        onClose();
+        navigate('/orders');
+      }, 2000);
+    } catch (error) {
+      alert('Failed to place order. Please try again.');
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -36,7 +53,13 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
             </div>
 
             <div className="cart-items">
-              {cartItems.length === 0 ? (
+              {orderSuccess ? (
+                <div className="success-state">
+                  <CheckCircle size={64} color="#10b981" />
+                  <h3>Order Placed!</h3>
+                  <p>Redirecting to your orders...</p>
+                </div>
+              ) : cartItems.length === 0 ? (
                 <div className="empty-cart">
                   <ShoppingBag size={64} />
                   <p>Your cart is empty</p>
@@ -51,11 +74,17 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                       <p className="item-price">${item.price.toFixed(2)}</p>
                       <div className="item-controls">
                         <div className="quantity-btns">
-                          <button onClick={() => updateQuantity(item.id, item.quantity - 1)}><Minus size={16} /></button>
+                          <button onClick={() => updateQuantity(item.id, item.quantity - 1)} disabled={loading}>
+                            <Minus size={16} />
+                          </button>
                           <span>{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.id, item.quantity + 1)}><Plus size={16} /></button>
+                          <button onClick={() => updateQuantity(item.id, item.quantity + 1)} disabled={loading}>
+                            <Plus size={16} />
+                          </button>
                         </div>
-                        <button className="delete-btn" onClick={() => removeFromCart(item.id)}><Trash2 size={18} /></button>
+                        <button className="delete-btn" onClick={() => removeFromCart(item.id)} disabled={loading}>
+                          <Trash2 size={18} />
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -63,7 +92,7 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
               )}
             </div>
 
-            {cartItems.length > 0 && (
+            {!orderSuccess && cartItems.length > 0 && (
               <div className="cart-footer">
                 <div className="total-row">
                   <span>Subtotal</span>
@@ -77,7 +106,13 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
                   <span>Total</span>
                   <span>${totalPrice.toFixed(2)}</span>
                 </div>
-                <button className="checkout-btn">Proceed to Checkout</button>
+                <button 
+                  className="checkout-btn" 
+                  onClick={handleCheckout} 
+                  disabled={loading}
+                >
+                  {loading ? <Loader2 className="animate-spin" /> : 'Proceed to Checkout'}
+                </button>
               </div>
             )}
           </motion.div>
@@ -88,3 +123,4 @@ const CartDrawer: React.FC<CartDrawerProps> = ({ isOpen, onClose }) => {
 };
 
 export default CartDrawer;
+
