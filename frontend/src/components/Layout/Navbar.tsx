@@ -37,10 +37,10 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick }) => {
             <div className="user-profile">
               <User size={24} />
               <div className="dropdown">
-                <p className="user-name">{user?.username}</p>
+                <p className="user-name">{user?.name}</p>
                 <div className="dropdown-divider"></div>
                 <Link to="/orders" className="dropdown-item">My Orders</Link>
-                {user?.roles.includes('ROLE_ADMIN') && (
+                {user?.role === 'ROLE_ADMIN' && (
                   <Link to="/admin" className="dropdown-item">Admin Dashboard</Link>
                 )}
                 <div className="dropdown-divider"></div>

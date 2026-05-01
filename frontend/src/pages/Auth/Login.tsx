@@ -7,7 +7,7 @@ import axiosInstance from '../../api/axiosConfig';
 import './Auth.css';
 
 const Login: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,7 +21,7 @@ const Login: React.FC = () => {
     setError('');
     
     try {
-      const response = await axiosInstance.post('/auth/signin', { username, password });
+      const response = await axiosInstance.post('/auth/signin', { email, password });
       login(response.data, response.data.token);
       navigate('/');
     } catch (err: any) {
@@ -48,14 +48,14 @@ const Login: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label>Username</label>
+            <label>Email Address</label>
             <div className="input-with-icon">
               <Mail size={20} />
               <input 
-                type="text" 
-                placeholder="Enter your username" 
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type="email" 
+                placeholder="Enter your email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>

@@ -9,7 +9,7 @@ export const PrivateRoute: React.FC = () => {
 
 export const AdminRoute: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
-  const isAdmin = user?.roles.includes('ROLE_ADMIN');
+  const isAdmin = user?.role === 'ROLE_ADMIN';
   
   return isAuthenticated && isAdmin ? <Outlet /> : <Navigate to="/" />;
 };

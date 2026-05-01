@@ -7,7 +7,7 @@ import './Auth.css';
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
-    username: '',
+    name: '',
     email: '',
     password: '',
     confirmPassword: ''
@@ -33,7 +33,7 @@ const Register: React.FC = () => {
     
     try {
       await axiosInstance.post('/auth/signup', {
-        username: formData.username,
+        name: formData.name,
         email: formData.email,
         password: formData.password
       });
@@ -62,14 +62,14 @@ const Register: React.FC = () => {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label>Username</label>
+            <label>Full Name</label>
             <div className="input-with-icon">
               <User size={20} />
               <input 
-                name="username"
+                name="name"
                 type="text" 
-                placeholder="Choose a username" 
-                value={formData.username}
+                placeholder="Enter your full name" 
+                value={formData.name}
                 onChange={handleChange}
                 required
               />

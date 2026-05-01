@@ -41,7 +41,7 @@ const AdminDashboard: React.FC = () => {
     try {
       const [foodsRes, catsRes] = await Promise.all([
         axiosInstance.get('/food'),
-        axiosInstance.get('/category')
+        axiosInstance.get('/categories')
       ]);
       setFoods(foodsRes.data);
       setCategories(catsRes.data);
@@ -72,7 +72,7 @@ const AdminDashboard: React.FC = () => {
       if (activeTab === 'foods') {
         await axiosInstance.delete(`/food/${id}`);
       } else {
-        await axiosInstance.delete(`/category/${id}`);
+        await axiosInstance.delete(`/categories/${id}`);
       }
       fetchInitialData();
     } catch (error) {
@@ -85,9 +85,11 @@ const AdminDashboard: React.FC = () => {
     try {
       if (activeTab === 'foods') {
         const payload = {
-          ...formData,
+          name: formData.name,
           price: parseFloat(formData.price),
-          categoryId: parseInt(formData.categoryId)
+          imageUrl: formData.imageUrl,
+          description: formData.description,
+          category: { id: parseInt(formData.categoryId) }
         };
         if (editingItem) {
           await axiosInstance.put(`/food/${editingItem.id}`, payload);
@@ -96,9 +98,9 @@ const AdminDashboard: React.FC = () => {
         }
       } else {
         if (editingItem) {
-          await axiosInstance.put(`/category/${editingItem.id}`, { name: formData.name });
+          await axiosInstance.put(`/categories/${editingItem.id}`, { name: formData.name });
         } else {
-          await axiosInstance.post('/category', { name: formData.name });
+          await axiosInstance.post('/categories', { name: formData.name });
         }
       }
       setShowModal(false);
