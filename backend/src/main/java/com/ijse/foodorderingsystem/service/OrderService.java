@@ -26,10 +26,8 @@ public class OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
-    private OrderItemRepository orderItemRepository;
-
-    @Autowired
     private UserRepository userRepository;
+
 
     @Autowired
     private CartService cartService;
