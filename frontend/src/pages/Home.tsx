@@ -35,7 +35,15 @@ const Home: React.FC = () => {
           axiosInstance.get('/food'),
           axiosInstance.get('/categories')
         ]);
-        setFoodItems(foodRes.data.length > 0 ? foodRes.data : MOCK_FOOD);
+        
+        // Combine backend food with mock food to ensure a rich UI
+        const backendFoods = foodRes.data || [];
+        const combinedFoods = [
+          ...backendFoods,
+          ...MOCK_FOOD.filter(mock => !backendFoods.some((b: any) => b.name === mock.name))
+        ];
+        
+        setFoodItems(combinedFoods);
         setCategories(catRes.data.length > 0 ? catRes.data : [
           { id: 1, name: 'Pizza' }, { id: 2, name: 'Burgers' }, { id: 3, name: 'Sushi' }, 
           { id: 4, name: 'Salads' }, { id: 5, name: 'Pasta' }, { id: 6, name: 'Mexican' }
@@ -53,7 +61,11 @@ const Home: React.FC = () => {
   }, []);
 
   const filteredItems = foodItems.filter(item => {
-    const matchesCategory = selectedCategory ? item.category?.id === selectedCategory : true;
+    // If a category is selected, match by category ID or name (for mock items)
+    const matchesCategory = selectedCategory 
+      ? (item.category?.id === selectedCategory || item.category?.name === categories.find(c => c.id === selectedCategory)?.name) 
+      : true;
+    
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           item.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
