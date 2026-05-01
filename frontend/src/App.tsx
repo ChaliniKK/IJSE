@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import { CartProvider } from './context/CartContext';
+import { CartProvider, useCart } from './context/CartContext';
 import Navbar from './components/Layout/Navbar';
 import CartDrawer from './components/Cart/CartDrawer';
 import Home from './pages/Home';
@@ -13,16 +12,24 @@ import { PrivateRoute, AdminRoute } from './components/Auth/ProtectedRoutes';
 import './App.css';
 
 function App() {
-  const [isCartOpen, setIsCartOpen] = useState(false);
-
   return (
     <AuthProvider>
       <CartProvider>
-        <Router>
-          <div className="app">
-            <Navbar onCartClick={() => setIsCartOpen(true)} />
-            <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-            <main>
+        <AppContent />
+      </CartProvider>
+    </AuthProvider>
+  );
+}
+
+function AppContent() {
+  const { isCartOpen, setIsCartOpen } = useCart();
+
+  return (
+    <Router>
+      <div className="app">
+        <Navbar onCartClick={() => setIsCartOpen(true)} />
+        <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+        <main>
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
@@ -42,8 +49,6 @@ function App() {
             </main>
           </div>
         </Router>
-      </CartProvider>
-    </AuthProvider>
   );
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Utensils, Star, Clock } from 'lucide-react';
 import FoodCard from '../components/Food/FoodCard';
@@ -15,6 +15,11 @@ const MOCK_FOOD = [
 const Home: React.FC = () => {
   const [foodItems, setFoodItems] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
+  const mealsRef = useRef<HTMLDivElement>(null);
+
+  const scrollToMeals = () => {
+    mealsRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,8 +52,8 @@ const Home: React.FC = () => {
             <h1>Delicious Food <br /><span>Delivered</span> to You</h1>
             <p>Order from your favorite restaurants and get the best meals in town, delivered fresh and fast.</p>
             <div className="hero-btns">
-              <button className="btn-primary">Order Now</button>
-              <button className="btn-secondary">Explore Menu</button>
+              <button className="btn-primary" onClick={scrollToMeals}>Order Now</button>
+              <button className="btn-secondary" onClick={scrollToMeals}>Explore Menu</button>
             </div>
             
             <div className="stats">
@@ -105,7 +110,7 @@ const Home: React.FC = () => {
       </section>
 
 
-      <section className="food-grid-section container">
+      <section className="food-grid-section container" ref={mealsRef}>
         <div className="section-header">
           <h2>Featured Meals</h2>
           <button className="view-all">View All</button>

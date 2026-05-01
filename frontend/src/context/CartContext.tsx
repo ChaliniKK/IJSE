@@ -27,12 +27,15 @@ interface CartContextType {
   totalItems: number;
   totalPrice: number;
   loading: boolean;
+  isCartOpen: boolean;
+  setIsCartOpen: (isOpen: boolean) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cartItems, setCartItems] = useState<UICartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { user, isAuthenticated } = useAuth();
 
@@ -77,8 +80,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         quantity: 1
       });
       await fetchCart();
+      setIsCartOpen(true);
     } catch (error) {
       console.error('Error adding to cart:', error);
+      alert('Failed to add item to cart. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -154,7 +159,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   return (
     <CartContext.Provider value={{ 
-      cartItems, addToCart, removeFromCart, updateQuantity, clearCart, placeOrder, totalItems, totalPrice, loading 
+      cartItems, addToCart, removeFromCart, updateQuantity, clearCart, placeOrder, totalItems, totalPrice, loading,
+      isCartOpen, setIsCartOpen
     }}>
       {children}
     </CartContext.Provider>
