@@ -4,17 +4,24 @@ import { Utensils, Star, Clock } from 'lucide-react';
 import FoodCard from '../components/Food/FoodCard';
 import axiosInstance from '../api/axiosConfig';
 import './Home.css';
+import { useCart } from '../context/CartContext';
 
 const MOCK_FOOD = [
-  { id: 1, name: 'Margherita Pizza', price: 12.99, description: 'Classic pizza with tomato sauce, mozzarella, and fresh basil.', imageUrl: 'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&q=80&w=400' },
-  { id: 2, name: 'Double Burger', price: 15.50, description: 'Juicy double beef patty with cheese, lettuce, and secret sauce.', imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=400' },
-  { id: 3, name: 'Dragon Roll', price: 18.00, description: 'Tempura shrimp, cucumber, avocado topped with eel sauce.', imageUrl: 'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&q=80&w=400' },
-  { id: 4, name: 'Greek Salad', price: 10.99, description: 'Fresh cucumbers, tomatoes, olives, and feta cheese.', imageUrl: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&q=80&w=400' },
+  { id: 1, name: 'Margherita Pizza', price: 12.99, description: 'Classic pizza with tomato sauce, mozzarella, and fresh basil.', imageUrl: 'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&q=80&w=400', category: { id: 1, name: 'Pizza' } },
+  { id: 2, name: 'Double Burger', price: 15.50, description: 'Juicy double beef patty with cheese, lettuce, and secret sauce.', imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=400', category: { id: 2, name: 'Burgers' } },
+  { id: 3, name: 'Dragon Roll', price: 18.00, description: 'Tempura shrimp, cucumber, avocado topped with eel sauce.', imageUrl: 'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&q=80&w=400', category: { id: 3, name: 'Sushi' } },
+  { id: 4, name: 'Greek Salad', price: 10.99, description: 'Fresh cucumbers, tomatoes, olives, and feta cheese.', imageUrl: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&q=80&w=400', category: { id: 4, name: 'Salads' } },
+  { id: 5, name: 'Pepperoni Pizza', price: 14.99, description: 'Loaded with pepperoni and extra mozzarella.', imageUrl: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&q=80&w=400', category: { id: 1, name: 'Pizza' } },
+  { id: 6, name: 'Pasta Carbonara', price: 16.50, description: 'Creamy pasta with pancetta and parmesan.', imageUrl: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?auto=format&fit=crop&q=80&w=400', category: { id: 5, name: 'Pasta' } },
+  { id: 7, name: 'Chicken Tacos', price: 11.50, description: 'Soft tacos with grilled chicken and fresh salsa.', imageUrl: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&q=80&w=400', category: { id: 6, name: 'Mexican' } },
+  { id: 8, name: 'Steak Frites', price: 24.99, description: 'Juicy steak served with crispy french fries.', imageUrl: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&q=80&w=400', category: { id: 7, name: 'Main' } },
 ];
 
 const Home: React.FC = () => {
   const [foodItems, setFoodItems] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const { searchQuery } = useCart();
   const mealsRef = useRef<HTMLDivElement>(null);
 
   const scrollToMeals = () => {
@@ -29,18 +36,31 @@ const Home: React.FC = () => {
           axiosInstance.get('/categories')
         ]);
         setFoodItems(foodRes.data.length > 0 ? foodRes.data : MOCK_FOOD);
-        setCategories(catRes.data);
+        setCategories(catRes.data.length > 0 ? catRes.data : [
+          { id: 1, name: 'Pizza' }, { id: 2, name: 'Burgers' }, { id: 3, name: 'Sushi' }, 
+          { id: 4, name: 'Salads' }, { id: 5, name: 'Pasta' }, { id: 6, name: 'Mexican' }
+        ]);
       } catch (error) {
         console.error("Failed to fetch data:", error);
         setFoodItems(MOCK_FOOD);
+        setCategories([
+          { id: 1, name: 'Pizza' }, { id: 2, name: 'Burgers' }, { id: 3, name: 'Sushi' }, 
+          { id: 4, name: 'Salads' }, { id: 5, name: 'Pasta' }, { id: 6, name: 'Mexican' }
+        ]);
       }
     };
     fetchData();
   }, []);
 
+  const filteredItems = foodItems.filter(item => {
+    const matchesCategory = selectedCategory ? item.category?.id === selectedCategory : true;
+    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          item.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
   return (
     <div className="home-page">
-      {/* ... Hero section remains same ... */}
       <section className="hero">
         <div className="container hero-content">
           <motion.div 
@@ -94,10 +114,18 @@ const Home: React.FC = () => {
       <section className="categories container">
         <h2>Popular Categories</h2>
         <div className="category-grid">
+          <motion.div 
+            className={`category-card ${selectedCategory === null ? 'active' : ''}`}
+            onClick={() => setSelectedCategory(null)}
+            whileHover={{ scale: 1.05 }}
+          >
+            All
+          </motion.div>
           {categories.map((cat, i) => (
             <motion.div 
               key={cat.id} 
-              className="category-card"
+              className={`category-card ${selectedCategory === cat.id ? 'active' : ''}`}
+              onClick={() => setSelectedCategory(cat.id)}
               whileHover={{ scale: 1.05 }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -112,13 +140,19 @@ const Home: React.FC = () => {
 
       <section className="food-grid-section container" ref={mealsRef}>
         <div className="section-header">
-          <h2>Featured Meals</h2>
-          <button className="view-all">View All</button>
+          <h2>{selectedCategory ? categories.find(c => c.id === selectedCategory)?.name : 'Featured'} Meals</h2>
+          <button className="view-all" onClick={() => setSelectedCategory(null)}>View All</button>
         </div>
         <div className="food-grid">
-          {foodItems.map((item) => (
-            <FoodCard key={item.id} item={item} />
-          ))}
+          {filteredItems.length > 0 ? (
+            filteredItems.map((item) => (
+              <FoodCard key={item.id} item={item} />
+            ))
+          ) : (
+            <div className="no-results">
+              <p>No food items found matching your criteria.</p>
+            </div>
+          )}
         </div>
       </section>
     </div>

@@ -29,6 +29,8 @@ interface CartContextType {
   loading: boolean;
   isCartOpen: boolean;
   setIsCartOpen: (isOpen: boolean) => void;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -36,6 +38,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cartItems, setCartItems] = useState<UICartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const { user, isAuthenticated } = useAuth();
 
@@ -160,7 +163,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   return (
     <CartContext.Provider value={{ 
       cartItems, addToCart, removeFromCart, updateQuantity, clearCart, placeOrder, totalItems, totalPrice, loading,
-      isCartOpen, setIsCartOpen
+      isCartOpen, setIsCartOpen, searchQuery, setSearchQuery
     }}>
       {children}
     </CartContext.Provider>

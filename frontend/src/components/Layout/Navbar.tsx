@@ -11,7 +11,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onCartClick }) => {
   const { user, logout, isAuthenticated } = useAuth();
-  const { totalItems } = useCart();
+  const { totalItems, searchQuery, setSearchQuery } = useCart();
 
   return (
     <nav className="navbar">
@@ -22,7 +22,12 @@ const Navbar: React.FC<NavbarProps> = ({ onCartClick }) => {
 
         <div className="search-bar">
           <Search size={20} />
-          <input type="text" placeholder="Search for food..." />
+          <input 
+            type="text" 
+            placeholder="Search for food..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
 
         <div className="nav-links">

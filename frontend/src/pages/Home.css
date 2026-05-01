@@ -153,9 +153,11 @@
   border: 2px solid transparent;
 }
 
-.category-card:hover {
+.category-card:hover,
+.category-card.active {
   border-color: var(--primary);
   color: var(--primary);
+  background: rgba(255, 71, 87, 0.05);
 }
 
 .food-grid-section {
