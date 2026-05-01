@@ -1,7 +1,6 @@
 package com.ijse.foodorderingsystem.service;
 
 import com.ijse.foodorderingsystem.entity.*;
-import com.ijse.foodorderingsystem.repository.OrderItemRepository;
 import com.ijse.foodorderingsystem.repository.OrderRepository;
 import com.ijse.foodorderingsystem.repository.UserRepository;
 import org.slf4j.Logger;

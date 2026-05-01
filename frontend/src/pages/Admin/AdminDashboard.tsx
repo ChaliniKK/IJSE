@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axiosInstance from '../api/axiosConfig';
-import { Plus, Edit2, Trash2, LayoutDashboard, Utensils, List as ListIcon, ShoppingBag } from 'lucide-react';
+import axiosInstance from '../../api/axiosConfig';
+import { Plus, Edit2, Trash2, LayoutDashboard, Utensils, List as ListIcon } from 'lucide-react';
 import './AdminDashboard.css';
 
 interface Category {

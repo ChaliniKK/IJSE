@@ -10,11 +10,6 @@ interface FoodItem {
   description: string;
 }
 
-interface CartItem {
-  id: number; // This will be the cart item ID from backend
-  foodItem: FoodItem;
-  quantity: number;
-}
 
 // Local interface for what the UI expects
 interface UICartItem extends FoodItem {

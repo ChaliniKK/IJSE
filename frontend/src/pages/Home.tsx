@@ -15,7 +15,6 @@ const MOCK_FOOD = [
 const Home: React.FC = () => {
   const [foodItems, setFoodItems] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,8 +28,6 @@ const Home: React.FC = () => {
       } catch (error) {
         console.error("Failed to fetch data:", error);
         setFoodItems(MOCK_FOOD);
-      } finally {
-        setLoading(false);
       }
     };
     fetchData();
