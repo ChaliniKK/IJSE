@@ -29,10 +29,14 @@ const Orders: React.FC = () => {
   const fetchOrders = async () => {
     if (!user) return;
     try {
+      setLoading(true);
       const response = await axiosInstance.get(`/orders/user/${user.id}`);
-      setOrders(response.data.sort((a: Order, b: Order) => 
-        new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime()
-      ));
+      const sortedOrders = (response.data || []).sort((a: Order, b: Order) => {
+        const dateA = a.orderDate ? new Date(a.orderDate).getTime() : 0;
+        const dateB = b.orderDate ? new Date(b.orderDate).getTime() : 0;
+        return dateB - dateA;
+      });
+      setOrders(sortedOrders);
     } catch (error) {
       console.error('Error fetching orders:', error);
     } finally {
