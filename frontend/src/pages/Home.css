@@ -137,20 +137,28 @@
 }
 
 .category-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  display: flex;
   gap: 20px;
+  overflow-x: auto;
+  padding: 10px 0 20px;
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+.category-grid::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome/Safari */
 }
 
 .category-card {
   background: var(--surface);
-  padding: 30px 20px;
+  padding: 20px 40px;
   border-radius: var(--radius);
   text-align: center;
   font-weight: 600;
   box-shadow: var(--shadow);
   cursor: pointer;
   border: 2px solid transparent;
+  white-space: nowrap; /* Keep text in one line */
+  min-width: fit-content;
 }
 
 .category-card:hover,

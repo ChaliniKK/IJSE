@@ -24,6 +24,8 @@ const Home: React.FC = () => {
     mealsRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const [showAllFood, setShowAllFood] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -47,6 +49,8 @@ const Home: React.FC = () => {
                           item.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+
+  const displayedItems = showAllFood ? filteredItems : filteredItems.slice(0, 6);
 
   return (
     <div className="home-page">
@@ -130,11 +134,13 @@ const Home: React.FC = () => {
       <section className="food-grid-section container" ref={mealsRef}>
         <div className="section-header">
           <h2>{selectedCategory ? categories.find(c => c.id === selectedCategory)?.name : 'Featured'} Meals</h2>
-          <button className="view-all" onClick={() => setSelectedCategory(null)}>View All</button>
+          <button className="view-all" onClick={() => setShowAllFood(!showAllFood)}>
+            {showAllFood ? 'Show Less' : 'View All'}
+          </button>
         </div>
         <div className="food-grid">
-          {filteredItems.length > 0 ? (
-            filteredItems.map((item) => (
+          {displayedItems.length > 0 ? (
+            displayedItems.map((item) => (
               <FoodCard key={item.id} item={item} />
             ))
           ) : (
