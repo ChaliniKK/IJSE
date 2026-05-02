@@ -170,6 +170,7 @@ const Orders: React.FC = () => {
                 </div>
 
                 <div className="p-8 bg-slate-50/50 dark:bg-slate-800/30 flex justify-between items-center">
+                  <div className="flex gap-4">
                   </div>
                   {order.status === 'PLACED' && (
                     <button
