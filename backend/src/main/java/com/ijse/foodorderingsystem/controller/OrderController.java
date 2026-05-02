@@ -31,7 +31,7 @@ public class OrderController {
 
     // Get all orders for a specific user
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Order>> getOrdersByUser(@PathVariable Long userId) {
+    public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable Long userId) {
         logger.info("GET /api/orders/user/{}", userId);
         return ResponseEntity.ok(orderService.getOrdersByUserId(userId));
     }

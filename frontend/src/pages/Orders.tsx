@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axiosInstance from '../api/axiosConfig';
 import { useAuth } from '../context/AuthContext';
 import { Package, Clock, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface OrderItem {
   id: number;
@@ -61,30 +62,30 @@ const Orders: React.FC = () => {
 
   const getStatusStyles = (status: string) => {
     switch (status) {
-      case 'DELIVERED': 
-        return { 
-          bg: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400', 
-          icon: <CheckCircle size={18} /> 
+      case 'DELIVERED':
+        return {
+          bg: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400',
+          icon: <CheckCircle size={18} />
         };
-      case 'CANCELLED': 
-        return { 
-          bg: 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-400', 
-          icon: <XCircle size={18} /> 
+      case 'CANCELLED':
+        return {
+          bg: 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-400',
+          icon: <XCircle size={18} />
         };
       case 'READY':
-        return { 
-          bg: 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400', 
-          icon: <Clock size={18} /> 
+        return {
+          bg: 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400',
+          icon: <Clock size={18} />
         };
       case 'PREPARING':
-        return { 
-          bg: 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400', 
-          icon: <Clock size={18} className="animate-pulse" /> 
+        return {
+          bg: 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400',
+          icon: <Clock size={18} className="animate-pulse" />
         };
-      default: 
-        return { 
-          bg: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400', 
-          icon: <Clock size={18} /> 
+      default:
+        return {
+          bg: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400',
+          icon: <Clock size={18} />
         };
     }
   };
@@ -120,8 +121,8 @@ const Orders: React.FC = () => {
           {orders.map((order) => {
             const status = getStatusStyles(order.status);
             return (
-              <motion.div 
-                key={order.id} 
+              <motion.div
+                key={order.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden"
@@ -149,9 +150,9 @@ const Orders: React.FC = () => {
                   {order.orderItems.map((item) => (
                     <div key={item.id} className="flex items-center gap-6 group">
                       <div className="relative w-20 h-20 rounded-2xl overflow-hidden shadow-md">
-                        <img 
-                          src={item.foodItem.imageUrl} 
-                          alt={item.foodItem.name} 
+                        <img
+                          src={item.foodItem.imageUrl}
+                          alt={item.foodItem.name}
                           className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-500"
                         />
                       </div>
@@ -169,11 +170,11 @@ const Orders: React.FC = () => {
                 </div>
 
                 <div className="p-8 bg-slate-50/50 dark:bg-slate-800/30 flex justify-between items-center">
-                   <div className="flex gap-4">
-                     {/* Could add Re-order button here */}
-                   </div>
-                   {order.status === 'PLACED' && (
-                    <button 
+                  <div className="flex gap-4">
+                    {/* Could add Re-order button here */}
+                  </div>
+                  {order.status === 'PLACED' && (
+                    <button
                       className="px-6 py-2 bg-rose-50 text-rose-600 hover:bg-rose-100 dark:bg-rose-500/10 dark:text-rose-400 rounded-xl font-bold text-sm transition-colors"
                       onClick={() => handleCancelOrder(order.id)}
                     >
