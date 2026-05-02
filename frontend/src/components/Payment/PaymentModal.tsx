@@ -20,17 +20,15 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ isOpen, onClose, orderId, a
     setLoading(true);
     setStep('PROCESSING');
     try {
-      // 1. Initiate Payment
       const initResponse = await axiosInstance.post(`/payments/initiate/${orderId}`, {
         paymentMethod
       });
       
       const paymentId = initResponse.data.id;
 
-      // 2. Mock Delay to simulate gateway
+      // Mock delay to simulate a payment gateway
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // 3. Confirm Payment
       await axiosInstance.put(`/payments/${paymentId}/confirm`);
       
       setStep('SUCCESS');

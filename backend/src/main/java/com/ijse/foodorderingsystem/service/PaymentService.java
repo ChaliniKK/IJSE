@@ -25,9 +25,7 @@ public class PaymentService {
     @Autowired
     private OrderRepository orderRepository;
 
-    /**
-     * Initiates a mock payment for an order.
-     */
+    // Initiate a mock payment
     public Payment initiatePayment(Long orderId, String paymentMethod) {
         logger.info("Initiating payment for orderId: {}, method: {}", orderId, paymentMethod);
         Order order = orderRepository.findById(orderId)
@@ -51,9 +49,7 @@ public class PaymentService {
         return saved;
     }
 
-    /**
-     * Mock: confirms payment (simulates a payment gateway callback).
-     */
+    // Confirm payment (simulate gateway callback)
     public Payment confirmPayment(Long paymentId) {
         logger.info("Confirming payment id: {}", paymentId);
         Payment payment = paymentRepository.findById(paymentId)
@@ -71,9 +67,7 @@ public class PaymentService {
         return paymentRepository.save(payment);
     }
 
-    /**
-     * Mock: fails payment.
-     */
+    // Fail payment
     public Payment failPayment(Long paymentId) {
         logger.info("Failing payment id: {}", paymentId);
         Payment payment = paymentRepository.findById(paymentId)

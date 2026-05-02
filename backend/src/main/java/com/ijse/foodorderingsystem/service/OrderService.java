@@ -31,9 +31,6 @@ public class OrderService {
     @Autowired
     private CartService cartService;
 
-    /**
-     * Places a new order from the user's cart.
-     */
     public Order placeOrder(Long userId) {
         logger.info("Placing order for userId: {}", userId);
         Cart cart = cartService.getCartByUserId(userId);
@@ -70,7 +67,6 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
         logger.info("Order placed successfully with id: {}", savedOrder.getId());
 
-        // Clear cart after successful order
         cartService.clearCart(userId);
 
         return savedOrder;
@@ -88,9 +84,6 @@ public class OrderService {
         return orderRepository.findById(id);
     }
 
-    /**
-     * Updates the status of an existing order (ADMIN only).
-     */
     public Order updateOrderStatus(Long orderId, Order.Status newStatus) {
         logger.info("Updating order {} status to {}", orderId, newStatus);
         return orderRepository.findById(orderId).map(order -> {

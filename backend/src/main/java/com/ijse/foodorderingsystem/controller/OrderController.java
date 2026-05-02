@@ -22,21 +22,18 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    // Place a new order from the user's cart
     @PostMapping("/place/{userId}")
     public ResponseEntity<Order> placeOrder(@PathVariable Long userId) {
         logger.info("POST /api/orders/place/{}", userId);
         return ResponseEntity.ok(orderService.placeOrder(userId));
     }
 
-    // Get all orders for a specific user
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Order>> getOrdersByUserId(@PathVariable Long userId) {
         logger.info("GET /api/orders/user/{}", userId);
         return ResponseEntity.ok(orderService.getOrdersByUserId(userId));
     }
 
-    // Get a specific order by id
     @GetMapping("/{id}")
     public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
         logger.info("GET /api/orders/{}", id);
@@ -45,7 +42,6 @@ public class OrderController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Cancel an order (customer)
     @PutMapping("/{id}/cancel")
     public ResponseEntity<Void> cancelOrder(@PathVariable Long id) {
         logger.info("PUT /api/orders/{}/cancel", id);
@@ -53,7 +49,6 @@ public class OrderController {
         return ResponseEntity.noContent().build();
     }
 
-    // Admin: get all orders
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Order>> getAllOrders() {
@@ -61,7 +56,6 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
 
-    // Admin: update order status
     @PutMapping("/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Order> updateOrderStatus(
