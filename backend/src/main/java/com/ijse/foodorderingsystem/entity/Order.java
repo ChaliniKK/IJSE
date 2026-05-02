@@ -32,6 +32,6 @@ public class Order {
     private Payment payment;
 
     public enum Status {
-        PLACED, PREPARING, DELIVERED, CANCELLED;
+        PLACED, PREPARING, READY, DELIVERED, CANCELLED;
     }
 }

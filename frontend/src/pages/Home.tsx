@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Utensils, Star, Clock } from 'lucide-react';
 import FoodCard from '../components/Food/FoodCard';
 import axiosInstance from '../api/axiosConfig';
-import './Home.css';
 import { useCart } from '../context/CartContext';
 
 const MOCK_FOOD = [
@@ -53,102 +52,182 @@ const Home: React.FC = () => {
   const displayedItems = showAllFood ? filteredItems : filteredItems.slice(0, 6);
 
   return (
-    <div className="home-page">
-      <section className="hero">
-        <div className="container hero-content">
+    <div className="space-y-20">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden rounded-[2.5rem] bg-slate-900 text-white min-h-[600px] flex items-center">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=1200" 
+            alt="Hero Background" 
+            className="w-full h-full object-cover opacity-40"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent" />
+        </div>
+
+        <div className="relative z-10 w-full px-8 md:px-16 grid md:grid-cols-2 gap-12 items-center">
           <motion.div 
-            className="hero-text"
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
+            className="space-y-8"
           >
-            <h1>Delicious Food <br /><span>Delivered</span> to You</h1>
-            <p>Order from your favorite restaurants and get the best meals in town, delivered fresh and fast.</p>
-            <div className="hero-btns">
-              <button className="btn-primary" onClick={scrollToMeals}>Order Now</button>
-              <button className="btn-secondary" onClick={scrollToMeals}>Explore Menu</button>
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/20 border border-primary/30 text-primary-hover text-sm font-bold tracking-wide uppercase">
+              ✨ 50% Off your first order
+            </div>
+            <h1 className="text-5xl md:text-7xl font-bold leading-tight">
+              Delicious Food <br />
+              <span className="text-primary italic">Delivered</span> to You
+            </h1>
+            <p className="text-xl text-slate-300 max-w-lg leading-relaxed">
+              Experience the best culinary delights from your favorite local restaurants, delivered fresh and fast to your doorstep.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <button 
+                onClick={scrollToMeals}
+                className="px-8 py-4 bg-primary hover:bg-primary-hover text-white rounded-2xl font-bold shadow-lg shadow-primary/30 transition-all hover:scale-105 active:scale-95"
+              >
+                Order Now
+              </button>
+              <button 
+                onClick={scrollToMeals}
+                className="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-2xl font-bold transition-all"
+              >
+                Explore Menu
+              </button>
             </div>
             
-            <div className="stats">
-              <div className="stat-item">
-                <Utensils size={24} />
-                <span>50+ Restaurants</span>
-              </div>
-              <div className="stat-item">
-                <Star size={24} />
-                <span>4.8 Rating</span>
-              </div>
-              <div className="stat-item">
-                <Clock size={24} />
-                <span>30 min Delivery</span>
-              </div>
+            <div className="flex gap-8 pt-8">
+              {[
+                { icon: Utensils, label: '50+ Restaurants' },
+                { icon: Star, label: '4.8 Rating' },
+                { icon: Clock, label: '30 min Delivery' }
+              ].map((stat, i) => (
+                <div key={i} className="flex flex-col items-center gap-2">
+                  <div className="p-3 bg-white/5 rounded-xl border border-white/10 text-primary">
+                    <stat.icon size={24} />
+                  </div>
+                  <span className="text-xs font-medium text-slate-400 uppercase tracking-tighter">{stat.label}</span>
+                </div>
+              ))}
             </div>
           </motion.div>
 
           <motion.div 
-            className="hero-image"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="hidden md:block relative"
           >
-            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=800" alt="Delicious Food" />
-            <div className="floating-card card-1">
-              <Star className="text-accent" fill="currentColor" size={16} />
-              <span>Top Rated</span>
+            <div className="relative z-10 rounded-[3rem] overflow-hidden border-8 border-white/10 shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-700">
+              <img 
+                src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=800" 
+                alt="Delicious Food" 
+                className="w-full aspect-square object-cover"
+              />
             </div>
-            <div className="floating-card card-2">
-              <Clock className="text-primary" size={16} />
-              <span>Fast Delivery</span>
-            </div>
+            
+            {/* Floating Elements */}
+            <motion.div 
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 3, repeat: Infinity }}
+              className="absolute -top-6 -right-6 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-xl flex items-center gap-3 z-20"
+            >
+              <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white">
+                <Star fill="currentColor" size={20} />
+              </div>
+              <div>
+                <div className="font-bold text-slate-800 dark:text-white">Top Rated</div>
+                <div className="text-xs text-slate-500">Best in Town</div>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 4, repeat: Infinity }}
+              className="absolute -bottom-6 -left-6 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-xl flex items-center gap-3 z-20"
+            >
+              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white">
+                <Clock size={20} />
+              </div>
+              <div>
+                <div className="font-bold text-slate-800 dark:text-white">Fast Delivery</div>
+                <div className="text-xs text-slate-500">Under 20 mins</div>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
-      <section className="categories container">
-        <h2>Popular Categories</h2>
-        <div className="category-grid">
-          <motion.div 
-            className={`category-card ${selectedCategory === null ? 'active' : ''}`}
+      {/* Categories Section */}
+      <section className="space-y-8">
+        <div className="flex justify-between items-end">
+          <div className="space-y-2">
+            <h2 className="text-3xl font-bold text-slate-800 dark:text-white">Popular Categories</h2>
+            <p className="text-slate-500">Choose from our curated collection of delicious meals</p>
+          </div>
+        </div>
+        
+        <div className="flex flex-wrap gap-4">
+          <motion.button 
             onClick={() => setSelectedCategory(null)}
             whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`px-8 py-3 rounded-2xl font-bold transition-all shadow-sm ${
+              selectedCategory === null 
+              ? 'bg-primary text-white shadow-primary/20' 
+              : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-50 border border-slate-100 dark:border-slate-800'
+            }`}
           >
-            All
-          </motion.div>
+            All Items
+          </motion.button>
           {categories.map((cat, i) => (
-            <motion.div 
+            <motion.button 
               key={cat.id} 
-              className={`category-card ${selectedCategory === cat.id ? 'active' : ''}`}
               onClick={() => setSelectedCategory(cat.id)}
               whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
+              className={`px-8 py-3 rounded-2xl font-bold transition-all shadow-sm ${
+                selectedCategory === cat.id 
+                ? 'bg-primary text-white shadow-primary/20' 
+                : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-50 border border-slate-100 dark:border-slate-800'
+              }`}
             >
               {cat.name}
-            </motion.div>
+            </motion.button>
           ))}
         </div>
       </section>
 
-
-      <section className="food-grid-section container" ref={mealsRef}>
-        <div className="section-header">
-          <h2>{selectedCategory ? categories.find(c => c.id === selectedCategory)?.name : 'Featured'} Meals</h2>
-          <button className="view-all" onClick={() => setShowAllFood(!showAllFood)}>
-            {showAllFood ? 'Show Less' : 'View All'}
+      {/* Food Grid Section */}
+      <section ref={mealsRef} className="space-y-8">
+        <div className="flex justify-between items-center">
+          <h2 className="text-3xl font-bold text-slate-800 dark:text-white">
+            {selectedCategory ? categories.find(c => c.id === selectedCategory)?.name : 'Featured'} Meals
+          </h2>
+          <button 
+            onClick={() => setShowAllFood(!showAllFood)}
+            className="text-primary font-bold hover:underline"
+          >
+            {showAllFood ? 'Show Less' : 'View All Meals'}
           </button>
         </div>
-        <div className="food-grid">
-          {displayedItems.length > 0 ? (
-            displayedItems.map((item) => (
+
+        {filteredItems.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {displayedItems.map((item) => (
               <FoodCard key={item.id} item={item} />
-            ))
-          ) : (
-            <div className="no-results">
-              <p>No food items found matching your criteria.</p>
-            </div>
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 text-center space-y-4 bg-white dark:bg-slate-900 rounded-[2rem] border-2 border-dashed border-slate-200 dark:border-slate-800">
+            <Utensils size={48} className="text-slate-300" />
+            <p className="text-xl font-medium text-slate-500">No food items found matching your criteria.</p>
+            <button onClick={() => {setSelectedCategory(null)}} className="text-primary font-bold">Clear filters</button>
+          </div>
+        )}
       </section>
     </div>
   );
